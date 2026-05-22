@@ -1,231 +1,232 @@
 # Inventory Dashboard - Google Apps Script
 
-Modern Inventory Dashboard built with:
-
-- Google Apps Script
-- Google Spreadsheet
-- HTML
-- Bootstrap 5
-- Vanilla JavaScript
-
-This project provides a simple inventory management system with:
-
-- Add Inventory
-- Edit Inventory
-- Delete Inventory
-- Search & Filter
-- Pagination
-- Summary Cards
-- Dark Mode
-- Responsive UI
+A modern, lightweight inventory management dashboard built using **Google Apps Script** and **Google Spreadsheet**, with a responsive UI powered by **Bootstrap 5** and **Vanilla JavaScript**.
 
 ---
 
-# Features
+## 🚀 Overview
 
-## Dashboard Summary
+This project provides a simple yet powerful inventory management system that runs entirely on Google infrastructure.
 
-Display:
-
-- Total Qty
-- Total Articles
-- Input Count
-- Output Count
-- Pending Count
+It is designed for learning purposes and small-scale inventory tracking.
 
 ---
 
-## Inventory Table
+## ✨ Features
 
-Features:
+### 📊 Dashboard Summary
 
-- Search Product / Article / Season
-- Filter by Status
-- Pagination
-- Edit Data
-- Delete Data
+Displays key inventory metrics:
 
----
-
-## Form Features
-
-### Add Inventory
-
-Add new inventory data directly into Google Spreadsheet.
-
-### Edit Inventory
-
-Edit existing inventory data using a separate modal form.
+* Total Quantity
+* Total Articles
+* Input Count
+* Output Count
+* Pending Count
 
 ---
 
-## Dark Mode
+### 📦 Inventory Management
 
-Modern dark mode UI included.
+* ➕ Add new inventory data
+* ✏️ Edit existing inventory
+* ❌ Delete inventory records
+* 🔍 Search by Product / Article / Season
+* 🎯 Filter by Status
+* 📄 Pagination support
 
 ---
 
-# Spreadsheet Structure
+### 🧾 Form Features
 
-Sheet Name:
+* Add inventory via modal form
+* Edit inventory via separate modal
+* Validation ready structure
 
+---
+
+### 🌙 UI/UX Features
+
+* Dark Mode support
+* Responsive design (Desktop, Tablet, Mobile)
+* Modern dashboard layout
+* Bootstrap cards & icons
+* Hover effects for better UX
+
+---
+
+## 🏗️ Tech Stack
+
+* Google Apps Script
+* Google Spreadsheet
+* HTML5
+* CSS3
+* Bootstrap 5
+* Vanilla JavaScript
+
+---
+
+## 📁 Project Structure
+
+```
+├── Code.gs
+├── Index.html
+├── JavaScript.html
+├── Style.html
+```
+
+---
+
+## 📊 Spreadsheet Structure
+
+### 📄 Sheet Name
+
+```
 DATA
+```
 
-Columns:
+### 📌 Columns
 
-Column	Name
-A	Id
-B	Date
-C	Season
-D	Product Name
-E	Article
-F	Stage
-G	Size
-H	Qty
-I	Lacking
-J	Status
-Project Structure
-Code.gs
-Index.html
-JavaScript.html
-Style.html
-Installation Guide
-1. Create Spreadsheet
+| Column | Field Name   |
+| ------ | ------------ |
+| A      | Id           |
+| B      | Date         |
+| C      | Season       |
+| D      | Product Name |
+| E      | Article      |
+| F      | Stage        |
+| G      | Size         |
+| H      | Qty          |
+| I      | Lacking      |
+| J      | Status       |
 
-Create a new Google Spreadsheet.
+---
 
-Rename spreadsheet to:
+## ⚙️ Installation Guide
 
-DATA
+### 1. Create Spreadsheet
 
-Rename first sheet to:
+* Create a new Google Spreadsheet
+* Rename spreadsheet file to: **DATA**
+* Rename first sheet to: **DATA**
 
-DATA
-2. Prepare Spreadsheet Columns
+---
 
-Add headers:
+### 2. Setup Columns
 
-Id
-Date
-Season
-Product Name
-Article
-Stage
-Size
-Qty
-Lacking
-Status
-3. Open Apps Script
+Add headers in row 1:
 
-Inside Spreadsheet:
+```
+Id | Date | Season | Product Name | Article | Stage | Size | Qty | Lacking | Status
+```
 
+---
+
+### 3. Open Apps Script
+
+Go to:
+
+```
 Extensions → Apps Script
-4. Create Files
+```
 
-Create:
+---
 
-Code.gs
-Index.html
-JavaScript.html
-Style.html
+### 4. Create Project Files
 
-Copy all project code into each file.
+Create the following files:
 
-5. Update Spreadsheet ID
+* Code.gs
+* Index.html
+* JavaScript.html
+* Style.html
 
-Inside Code.gs:
+Paste the corresponding code into each file.
 
+---
+
+### 5. Set Spreadsheet ID
+
+In `Code.gs`, update:
+
+```javascript
 const SPREADSHEET_ID = "YOUR_SPREADSHEET_ID";
+```
 
-Replace with your spreadsheet ID.
+Replace with your actual spreadsheet ID:
 
-Example:
-
+```
 https://docs.google.com/spreadsheets/d/THIS_IS_ID/edit
-Deploy Web App
-Steps
-1. Click Deploy
-Deploy → New Deployment
-2. Select Type
+```
 
-Choose:
+---
 
-Web App
-3. Execute As
+## 🚀 Deployment Guide
 
-Select:
+### 1. Deploy Web App
 
-Me
-4. Who Has Access
+* Click **Deploy**
+* Select **New Deployment**
+* Choose type: **Web App**
 
-Select:
+---
 
-Anyone
+### 2. Execution Settings
 
-or
+* Execute as: **Me**
 
-Anyone with the link
-5. Deploy
+---
 
-Click:
+### 3. Access Settings
 
-Deploy
+* Who has access:
 
-Authorize permissions if needed.
+  * Anyone
+  * or Anyone with the link
 
-Important Notes
-Always Redeploy After Code Changes
+---
 
-Every time you update code:
+### 4. Deploy
 
-Deploy → Manage Deployments → Edit → Deploy
+Click **Deploy** and authorize permissions if required.
 
-Otherwise changes will not appear.
+---
 
-Technologies Used
-Google Apps Script
-Google Spreadsheet
-Bootstrap 5
-JavaScript
-HTML5
-CSS3
-UI Features
-Responsive Design
+## ⚠️ Important Notes
 
-Works on:
+* Every code change requires redeployment:
 
-Desktop
-Tablet
-Mobile
-Modern Dashboard
+  ```
+  Deploy → Manage Deployments → Edit → Deploy
+  ```
+* Otherwise changes will not reflect on the web app.
 
-Includes:
+---
 
-Bootstrap Cards
-Icons
-Dark Mode
-Hover Effects
-Responsive Table
-Future Improvements
+## 🔮 Future Improvements
 
-Possible upgrades:
+Potential enhancements:
 
-Export PDF
-Export Excel
-Login Authentication
-Charts & Analytics
-Multi User Role
-Firebase Integration
-Real-time Update
-Image Upload
-QR / Barcode Scanner
-Author
+* Export to PDF
+* Export to Excel
+* Authentication system
+* Charts & analytics dashboard
+* Multi-user roles
+* Firebase integration
+* Real-time updates
+* Image upload support
+* QR / Barcode scanner
 
-Fathur Fakhriza
+---
 
+## 👨‍💻 Author
+
+**Fathur Fakhriza**
 Informatics Graduate
 Fullstack Developer Enthusiast
 
-License
+---
 
-Free to use for learning and personal projects.
+## 📄 License
+
+This project is free to use for learning and personal projects.
