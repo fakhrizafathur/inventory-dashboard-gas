@@ -1,0 +1,393 @@
+<script>
+
+let allData = [];
+
+let filteredData = [];
+
+let isLoaded = false;
+
+let currentPage = 1;
+
+let rowsPerPage = 10;
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  loadData();
+
+  loadSummary();
+
+});
+
+document.getElementById("rowsPerPageSelect")
+.addEventListener("change", function() {
+
+  rowsPerPage = Number(this.value);
+
+  currentPage = 1;
+
+  renderTable();
+  renderPagination();
+});
+
+function loadData() {
+  showLoading(true);
+
+  google.script.run
+  .withSuccessHandler(function(data) {
+
+    if (!Array.isArray(data)) data = [];
+
+    allData = data;
+    filteredData = [...data];
+    isLoaded = true;
+
+    renderTable();
+    renderPagination();
+    showLoading(false);
+
+  })
+  .withFailureHandler(function(err){
+    showLoading(false);
+  })
+  .getData();
+}
+
+function renderTable() {
+  const tableBody =
+    document.getElementById("tableBody");
+
+  if (!filteredData || filteredData.length === 0) {
+
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="10" class="text-center">
+          No Data
+        </td>
+      </tr>
+    `;
+
+    return;
+  }
+
+  const start =
+    (currentPage - 1) * rowsPerPage;
+
+  const end =
+    start + rowsPerPage;
+
+  const paginatedData =
+    filteredData.slice(start, end);
+
+  let html = "";
+
+  paginatedData.forEach(item => {
+
+    html += `
+      <tr>
+        <td>${item.date ?? '-'}</td>
+        <td>${item.season ?? '-'}</td>
+        <td>${item.product ?? '-'}</td>
+        <td>${item.article ?? '-'}</td>
+        <td>${item.stage ?? '-'}</td>
+        <td>${item.size ?? '-'}</td>
+        <td>${item.qty ?? 0}</td>
+        <td>${item.lacking ?? '_'}</td>
+
+        <td>
+          <span class="badge bg-primary">
+            ${item.status ?? '-'}
+          </span>
+        </td>
+
+        <td>
+          <button class="btn btn-warning btn-sm"
+            onclick="editDataByIndex(${item.rowIndex})">
+            Edit
+          </button>
+
+          <button class="btn btn-danger btn-sm"
+            onclick="deleteData(${item.rowIndex})">
+            Delete
+          </button>
+        </td>
+      </tr>
+    `;
+  });
+
+  tableBody.innerHTML = html;
+}
+
+function renderPagination() {
+
+  const pagination = document.getElementById("pagination");
+
+  pagination.innerHTML = "";
+
+  const pageCount = Math.ceil(filteredData.length / rowsPerPage);
+
+  for(let i = 1; i <= pageCount; i++) {
+
+    pagination.innerHTML += `
+      <button
+        class="pagination-btn ${i === currentPage ? 'active' : ''}"
+        onclick="goToPage(${i})">
+        ${i}
+      </button>
+    `;
+  }
+}
+
+function goToPage(page) {
+
+  currentPage = page;
+
+  renderTable();
+
+  renderPagination();
+}
+
+function loadSummary() {
+  google.script.run
+    .withSuccessHandler((summary) => {
+
+      if (!summary) return;
+
+      document.getElementById("totalArticle").innerText = summary.totalArticle || 0;
+      document.getElementById("totalQty").innerText = summary.totalQty || 0;
+      document.getElementById("inputCount").innerText = summary.input || 0;
+      document.getElementById("outputCount").innerText = summary.output || 0;
+      document.getElementById("pendingCount").innerText = summary.pending || 0;
+
+    })
+    .getSummary();
+}
+
+document.getElementById("dataForm")
+.addEventListener("submit", function(e){
+
+  e.preventDefault();
+
+  const formData =
+    Object.fromEntries(new FormData(this));
+
+  const isEdit = formData.rowIndex;
+
+  if(isEdit){
+
+    google.script.run
+      .withSuccessHandler(() => {
+
+        alert("Data updated");
+
+        resetForm();
+
+      })
+      .updateData(formData);
+
+  } else {
+
+    google.script.run
+      .withSuccessHandler(() => {
+
+        alert("Data saved");
+
+        resetForm();
+
+      })
+      .saveData(formData);
+  }
+});
+
+function editData(item) {
+
+  const form = document.getElementById("editForm");
+
+  form.rowIndex.value = item.rowIndex;
+  form.id.value = item.id;
+  form.date.value = item.date;
+  form.season.value = item.season;
+  form.product.value = item.product;
+  form.article.value = item.article;
+  form.stage.value = item.stage;
+  form.size.value = item.size;
+  form.qty.value = item.qty;
+  form.lacking.value = item.lacking;
+  form.status.value = item.status;
+
+  const modal = new bootstrap.Modal(
+    document.getElementById("editModal")
+  );
+
+  modal.show();
+}
+
+function submitEdit() {
+
+  const form =
+    document.getElementById("editForm");
+
+  const formData =
+    Object.fromEntries(new FormData(form));
+
+  google.script.run
+    .withSuccessHandler(() => {
+
+      alert("Data updated");
+
+      bootstrap.Modal.getInstance(
+        document.getElementById("editModal")
+      ).hide();
+
+      loadData();
+      loadSummary();
+
+    })
+    .updateData(formData);
+}
+
+function editDataByIndex(rowIndex){
+
+  const item =
+    allData.find(data => data.rowIndex === rowIndex);
+
+  if(!item) return;
+
+  editData(item);
+}
+
+function deleteData(rowIndex) {
+
+  const confirmDelete =
+    confirm("Yakin hapus data?");
+
+  if(!confirmDelete) return;
+
+  google.script.run
+    .withSuccessHandler(() => {
+
+      alert("Data deleted");
+
+      loadData();
+
+      loadSummary();
+
+    })
+    .deleteData(rowIndex);
+}
+
+function resetForm() {
+
+  document.getElementById("dataForm").reset();
+
+  loadData();
+
+  loadSummary();
+}
+
+const themeToggle =
+  document.getElementById("themeToggle");
+
+// LOAD THEME
+if(localStorage.getItem("theme") === "dark"){
+  document.body.classList.add("dark-mode");
+  themeToggle.innerHTML = '<i class="bi bi-sun"></i>';
+}
+
+themeToggle.addEventListener("click", () => {
+
+  document.body.classList.toggle("dark-mode");
+
+  const isDark =
+    document.body.classList.contains("dark-mode");
+
+  if(isDark){
+    themeToggle.innerHTML =
+      '<i class="bi bi-sun"></i>';
+
+    localStorage.setItem("theme", "dark");
+
+  } else {
+
+    themeToggle.innerHTML =
+      '<i class="bi bi-moon"></i>';
+
+    localStorage.setItem("theme", "light");
+  }
+});
+
+document.getElementById("searchInput")
+.addEventListener("keyup", applyFilters);
+
+document.getElementById("statusFilter")
+.addEventListener("change", applyFilters);
+
+function applyFilters(){
+
+  if(!isLoaded) return;
+
+  const search =
+    document.getElementById("searchInput")
+    .value.toLowerCase();
+
+  const status =
+    document.getElementById("statusFilter")
+    .value.toLowerCase();
+
+  filteredData = allData.filter(item => {
+
+    const product =
+      (item.product || "").toLowerCase();
+
+    const article =
+      (item.article || "").toLowerCase();
+
+    const season =
+      (item.season || "").toLowerCase();
+
+    const itemStatus =
+      (item.status || "").toLowerCase();
+
+    const matchSearch =
+
+      product.includes(search) ||
+      article.includes(search) ||
+      season.includes(search);
+
+    const matchStatus =
+
+      !status ||
+      itemStatus === status;
+
+    return matchSearch && matchStatus;
+  });
+
+  currentPage = 1;
+
+  renderTable();
+
+  renderPagination();
+}
+
+function showLoading(state){
+
+  const spinner =
+    document.getElementById("loadingSpinner");
+
+  const table =
+    document.querySelector(".table-responsive");
+
+  if(state){
+
+    spinner.classList.remove("d-none");
+
+    table.classList.add("d-none");
+
+  } else {
+
+    spinner.classList.add("d-none");
+
+    table.classList.remove("d-none");
+  }
+}
+
+</script>
